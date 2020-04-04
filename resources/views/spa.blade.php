@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Document</title>
+    <title>Библиотека</title>
     <!-- Подключаем Bootstrap, чтобы не работать над дизайном проекта -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
@@ -28,12 +28,15 @@
                         <td>{{book.title}}</td>
                         <td>{{book.author}}</td>
                         <td>
-                            <button type="button" class="btn btn-outline-primary" v-on:click="">
-                                Доступна
+                            <button v-if="book.availability" type="button" class="btn btn-outline-primary" v-on:click="changeBookAvailability(book.id)">
+                                Доступно
+                            </button>
+                            <button v-else type="button" class="btn btn-outline-primary" v-on:click="changeBookAvailability(book.id)">
+                                Выдано
                             </button>
                         </td>
                         <td>
-                            <button type="button" class="btn btn-outline-danger" v-on:click="">
+                            <button type="button" class="btn btn-outline-danger" v-on:click="deleteBook(book.id)">
                                 Удалить
                             </button>
                         </td>
@@ -46,7 +49,7 @@
                         <td><input v-model="addingAuthor" type="text" class="form-control"></td>
                         <td></td>
                         <td>
-                            <button @click="addBook()" type="button" class="btn btn-outline-success" v-on:click="">
+                            <button @click="addBook()" type="button" class="btn btn-outline-success">
                                 Добавить
                             </button>
                         </td>
@@ -70,11 +73,11 @@
             data: {
                 addingTitle:'',
                 addingAuthor:'',
-                books:[]
+                books:[], 
             },
             methods: {
                 loadBookList(){
-                    axios.get('book/all').then(response=>{
+                    axios.get('/book/all').then(response=>{
                         this.books = response.data;
                     })
                 },
@@ -83,13 +86,17 @@
                         title: this.addingTitle,
                         author: this.addingAuthor
                     })
-                    alert(this.addingAuthor + " " + this.addingTitle);
+                    this.loadBookList();
                 },
                 deleteBook(id){
-                    
+                    axios.get('/book/delete/' + id).then((response)=>{
+                        this.loadBookList();
+                    });
                 },
                 changeBookAvailability(id){
-                    
+                    axios.get('/book/change_availabilty/' + id).then((response)=>{
+                        this.loadBookList();
+                    });
                 }
             },
             mounted(){

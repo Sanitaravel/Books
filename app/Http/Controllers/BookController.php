@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Book;
+use Illuminate\Support\Facades\Log;
 
 class BookController extends Controller
 {
@@ -30,6 +31,7 @@ class BookController extends Controller
     }
 
     public function changeAvailabilty($id){
+        Log::alert('profit');
         $book = Book::findOrFail($id);
         $book->availability = !$book->availability;
 
